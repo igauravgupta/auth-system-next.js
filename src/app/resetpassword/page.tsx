@@ -15,9 +15,9 @@ export default function Resetpassword() {
   };
 
   useEffect(() => {
-    const token: any = useSearchParams().get("token");
+    const token: any = searchParams.get("token");
     setToken(token);
-  }, [token]);
+  }, [searchParams]);
   return (
     <div>
       <h1>Reset Password</h1>
