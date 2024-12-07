@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendMail } from "@/helpers/mail";
 import User from "@/models/user.model";
-export async function POST(request: NextRequest, response: NextResponse) {
+export async function POST(request: NextRequest) {
   try {
     const { email }: any = await request.json();
     const user = await User.findOne({ email });

@@ -1,6 +1,5 @@
 import connectDB from "@/dbconfig/dbconfig";
 import User from "@/models/user.model";
-import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
 import { verifyJWT } from "@/helpers/jwt";
 

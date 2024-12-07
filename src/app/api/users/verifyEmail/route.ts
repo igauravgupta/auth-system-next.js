@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 // connecting to db
 connectDB();
 
-export async function POST(request: NextRequest, response: NextResponse) {
+export async function POST(request: NextRequest) {
   try {
     const { token } = await request.json();
     const user = await User.findOne({
