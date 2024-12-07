@@ -13,10 +13,6 @@ export default function ProfilePage() {
     isVerified: false,
   });
 
-  useEffect(() => {
-    getUser();
-  }, []);
-
   const getUser = async () => {
     try {
       const response = await axios.get("/api/users/profile");
@@ -33,7 +29,9 @@ export default function ProfilePage() {
       console.error("Failed to fetch user:", error);
     }
   };
-
+  useEffect(() => {
+    getUser();
+  }, []);
   const logout = async () => {
     try {
       await axios.get("/api/users/logout");

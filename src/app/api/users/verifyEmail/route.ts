@@ -1,7 +1,6 @@
 import connectDB from "@/dbconfig/dbconfig";
 import User from "@/models/user.model";
 import { NextRequest, NextResponse } from "next/server";
-import bcrypt from "bcrypt";
 
 // connecting to db
 connectDB();
@@ -24,10 +23,7 @@ export async function POST(request: NextRequest) {
       { message: "Email verified successfully" },
       { status: 200 }
     );
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Something went wrong" },
-      { status: 500 }
-    );
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
