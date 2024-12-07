@@ -1,23 +1,31 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
 
-export default function Resetpassword() {
+function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const [token, setToken] = useState("");
   const [password, setPassword] = useState("");
-  const forgetPassword = async () => {
-    await axios.post("/api/users/forgetPassword", {
-      token,
-      password,
-    });
-  };
 
   useEffect(() => {
-    const token: any = searchParams.get("token");
-    setToken(token);
+    const tokenParam = searchParams.get("token");
+    if (tokenParam) {
+      setToken(tokenParam);
+    }
   }, [searchParams]);
+
+  const forgetPassword = async () => {
+    try {
+      await axios.post("/api/users/forgetPassword", {
+        token,
+        password,
+      });
+    } catch (error) {
+      console.error("Error resetting password:", error);
+    }
+  };
+
   return (
     <div>
       <h1>Reset Password</h1>
@@ -29,5 +37,13 @@ export default function Resetpassword() {
       />
       <button onClick={forgetPassword}>Reset Password</button>
     </div>
+  );
+}
+
+export default function ResetPassword() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResetPasswordForm />
+    </Suspense>
   );
 }
