@@ -10,6 +10,7 @@ export default function ProfilePage() {
     name: "",
     email: "",
     username: "",
+    isVerified: false,
   });
 
   useEffect(() => {
@@ -19,16 +20,17 @@ export default function ProfilePage() {
   const getUser = async () => {
     try {
       const response = await axios.get("/api/users/profile");
-      if (response.data.status == 400) {
+      if (response.data.status === 400) {
         router.push("/login");
       }
       setUser({
         name: response.data.user.username,
         email: response.data.user.email,
         username: response.data.user.username,
+        isVerified: Boolean(response.data.user.isVerified),
       });
     } catch (error) {
-      console.log("Failed to fetch user:", error);
+      console.error("Failed to fetch user:", error);
     }
   };
 
@@ -36,34 +38,98 @@ export default function ProfilePage() {
     try {
       await axios.get("/api/users/logout");
       router.push("/login");
-    } catch (error: any) {
-      console.log("Logout failed:", error.response.data);
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
+  const sendVerificationEmail = async () => {
+    try {
+      await axios.post("/api/users/sendVerificationEmail", {
+        email: user.email,
+      });
+      alert("Verification email sent");
+    } catch (error) {
+      console.error("Failed to send verification email:", error);
+    }
+  };
+
+  const forgetPassword = async () => {
+    try {
+      await axios.post("/api/users/sendForgetPasswordMail", {
+        email: user.email,
+      });
+      alert("Forget password email sent");
+    } catch (error) {
+      console.error("Failed to send forget password email:", error);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">Profile</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="bg-white shadow-xl rounded-lg p-8 w-full max-w-lg">
+        <h1 className="text-3xl font-semibold text-gray-800 mb-6 text-center">
+          Your Profile
+        </h1>
+
         <div className="space-y-4">
-          <p className="text-lg text-gray-700">
-            <span className="font-semibold">Name:</span> {user?.name}
-          </p>
-          <p className="text-lg text-gray-700">
-            <span className="font-semibold">Email:</span> {user?.email}
-          </p>
-          <p className="text-lg text-gray-700">
-            <span className="font-semibold">Username:</span> {user?.username}
-          </p>
+          <div className="flex justify-between items-center">
+            <span className="text-gray-600 font-medium">Name:</span>
+            <span className="text-gray-900 font-semibold">
+              {user.name || "-"}
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-gray-600 font-medium">Email:</span>
+            <span className="text-gray-900 font-semibold">
+              {user.email || "-"}
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-gray-600 font-medium">Username:</span>
+            <span className="text-gray-900 font-semibold">
+              {user.username || "-"}
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-gray-600 font-medium">Verified:</span>
+            <div className="flex items-center space-x-4">
+              <span
+                className={`font-semibold ${
+                  user.isVerified ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {user.isVerified ? "Yes" : "No"}
+              </span>
+              {!user.isVerified && (
+                <button
+                  onClick={sendVerificationEmail}
+                  className="text-blue-500 hover:text-blue-600 font-medium text-sm"
+                >
+                  Verify Now
+                </button>
+              )}
+            </div>
+          </div>
         </div>
-        <div className="mt-6 flex justify-between items-center">
+
+        <div className="mt-6 flex flex-col space-y-4">
           <button
             onClick={logout}
-            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition duration-200"
+            className="w-full py-2 px-4 text-white bg-red-500 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 transition duration-150"
           >
             Logout
           </button>
-          <Link href="/" className="text-blue-500 hover:underline text-sm">
+          <button
+            onClick={forgetPassword}
+            className="w-full py-2 px-4 text-white bg-yellow-500 rounded-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition duration-150"
+          >
+            Forget Password
+          </button>
+          <Link
+            href="/"
+            className="text-center text-blue-500 hover:underline text-sm"
+          >
             Go to Homepage
           </Link>
         </div>
