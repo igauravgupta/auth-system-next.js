@@ -3,7 +3,7 @@ import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 
-export default function VerifyEmail() {
+function VerifyEmailContent() {
   const searchParams = useSearchParams();
   const [token, setToken] = useState("");
   const [error, setError] = useState("");
@@ -48,4 +48,12 @@ export default function VerifyEmail() {
   }
 
   return <div>Something went wrong</div>;
+}
+
+export default function VerifyEmail() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyEmailContent />
+    </Suspense>
+  );
 }
