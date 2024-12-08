@@ -1,7 +1,7 @@
 "use client";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 
 export default function VerifyEmail() {
   const searchParams = useSearchParams();
